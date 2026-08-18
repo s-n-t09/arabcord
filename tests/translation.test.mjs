@@ -65,5 +65,12 @@ assert.equal(translateUiText("Log Out All Known Devices"), "تسجيل الخر�
 assert.equal(translateUiText("Noise Suppression"), "إزالة الضوضاء");
 assert.equal(translateUiText("Show exact search result counts"), "إظهار أعداد نتائج البحث الدقيقة");
 assert.equal(translateUiText("5 of 5 slots available"), "5 من أصل 5 خانات متاحة");
+assert.equal(translateUiText("12 of 20 slots available"), "12 من أصل 20 خانات متاحة");
+assert.equal(translateUiText("CONNECTED TEENS — 0 OF 8"), "المراهقون المتصلون — 0 من أصل 8");
+assert.equal(translateUiText("CONNECTED TEENS — 3 OF 8"), "المراهقون المتصلون — 3 من أصل 8");
+assert.equal(translateUiText("None"), "لا شيء");
+assert.equal(translateUiText("By turning on this setting, your voice may be included when someone in the same voice channel uses Clips."), "عند تفعيل هذا الإعداد، قد يُضمَّن صوتك عندما يستخدم شخص ما في القناة الصوتية نفسها ميزة Clips.");
+assert.equal(translateUiText("Allows us to use information, such as who you talk to and what games you play, to personalize Discord for you."), "يسمح لنا باستخدام معلومات مثل الأشخاص الذين تتحدث إليهم والألعاب التي تلعبها لتخصيص ديسكورد لك.");
+assert.equal(translateUiText("Allows us to personalize Sponsored Content, like Quests, using your Discord activity, such as the games you play. If you opt out you may still see Quests, but they won't be personalized."), "يسمح لنا بتخصيص المحتوى المدعوم، مثل المهام، باستخدام نشاطك على ديسكورد، مثل الألعاب التي تلعبها. إذا أوقفت هذا الخيار، فقد تستمر في رؤية المهام، لكنها لن تُخصّص.");
 
 console.log("ArabCord translation tests passed.");
