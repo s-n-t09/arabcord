@@ -371,6 +371,9 @@ function setSetting(key: keyof ArabCordStorage, value: boolean): void {
 
 const { FormSwitchRow, FormText } = Forms;
 const { Text } = General;
+// Vendetta's React Native type declarations are broader than the JSX runtime type.
+// Keep the runtime component unchanged while allowing all supported TypeScript versions to compile it.
+const SettingsScrollView: any = RN.ScrollView;
 
 export function Settings() {
   useProxy(settings as Record<string, unknown>);
@@ -386,7 +389,7 @@ export function Settings() {
   };
 
   return (
-    <RN.ScrollView>
+    <SettingsScrollView>
       <FormText style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         ArabCord يضيف العربية إلى واجهة Discord ويطبّق اتجاه RTL على مستوى React Native عند توفره.
       </FormText>
@@ -417,7 +420,7 @@ export function Settings() {
       <Text style={{ padding: 16, opacity: 0.7 }}>
         المحتوى الذي يكتبه المستخدمون والروابط وأسماء المستخدمين لا يُترجم تلقائيًا حفاظًا على المعنى والخصوصية.
       </Text>
-    </RN.ScrollView>
+    </SettingsScrollView>
   );
 }
 
