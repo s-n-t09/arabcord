@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <a href="https://arabcord.dcord.us"><img src="https://img.shields.io/badge/Plugin-ArabCord-5865F2?style=for-the-badge" alt="ArabCord Plugin"></a>
+  <a href="https://s-n-t09.github.io/arabcord/"><img src="https://img.shields.io/badge/Plugin-ArabCord-5865F2?style=for-the-badge" alt="ArabCord Plugin"></a>
   <a href="https://github.com/vendetta-mod/plugin-template"><img src="https://img.shields.io/badge/Platform-Vendetta%20%7C%20Revenge%20%7C%20Kettu-111827?style=for-the-badge" alt="Supported platforms"></a>
-  <a href="https://arabcord.dcord.us"><img src="https://img.shields.io/badge/Language-Arabic%20%2B%20RTL-16A34A?style=for-the-badge" alt="Arabic and RTL"></a>
+  <a href="https://s-n-t09.github.io/arabcord/"><img src="https://img.shields.io/badge/Language-Arabic%20%2B%20RTL-16A34A?style=for-the-badge" alt="Arabic and RTL"></a>
 </p>
 
 <p align="center">
@@ -59,12 +59,12 @@
 رابط الإضافة الرسمي هو:
 
 ```text
-https://arabcord.dcord.us
+https://s-n-t09.github.io/arabcord/
 ```
 
 اتبع الخطوات التالية:
 
-1. انسخ الرابط `https://arabcord.dcord.us`.
+1. انسخ الرابط `https://s-n-t09.github.io/arabcord/`.
 2. افتح Discord ثم اذهب إلى **Settings** ثم **Plugins**.
 3. اضغط على علامة **+** لبدء إضافة Plugin.
 4. الصق الرابط واضغط **Install**.
@@ -136,7 +136,7 @@ Discord UI
 | Author | `S.N.T` |
 | ID | `1444349574859980881` |
 | Plugin name | `ArabCord` |
-| Hosting | `https://arabcord.dcord.us` |
+| Hosting | `https://s-n-t09.github.io/arabcord/` |
 
 ## البناء محليًا
 
@@ -230,12 +230,12 @@ When manually enabled, ArabCord uses a limited patch for recognizable elements. 
 The official hosted plugin URL is:
 
 ```text
-https://arabcord.dcord.us
+https://s-n-t09.github.io/arabcord/
 ```
 
 Follow these steps:
 
-1. Copy `https://arabcord.dcord.us`.
+1. Copy `https://s-n-t09.github.io/arabcord/`.
 2. Open Discord and go to **Settings**, then **Plugins**.
 3. Press the **+** button to add a plugin.
 4. Paste the URL and press **Install**.
@@ -307,7 +307,7 @@ Discord UI
 | Author | `S.N.T` |
 | ID | `1444349574859980881` |
 | Plugin name | `ArabCord` |
-| Hosting | `https://arabcord.dcord.us` |
+| Hosting | `https://s-n-t09.github.io/arabcord/` |
 
 ## Local development
 
