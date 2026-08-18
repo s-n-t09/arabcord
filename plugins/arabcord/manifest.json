@@ -1,0 +1,14 @@
+{
+  "name": "ArabCord",
+  "description": "تعريب واجهة Discord وإضافة دعم RTL لمعدلات Revenge وKettu وVendetta.",
+  "authors": [
+    {
+      "name": "S.N.T",
+      "id": "1444349574859980881"
+    }
+  ],
+  "main": "src/index.tsx",
+  "vendetta": {
+    "icon": "ic_language"
+  }
+}
