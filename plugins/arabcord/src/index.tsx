@@ -173,16 +173,14 @@ function patchLiveRtl(): void {
   if (!react || typeof react.createElement !== "function" || typeof react.cloneElement !== "function") return;
 
   const textTypes = [RN.Text, RN.TextInput, (General as any).Text, (Forms as any).FormText];
+  // Do not patch every RN.View or every touchable. Discord uses generic Views
+  // for the server rail and the message composer; changing all of them can
+  // hide absolute-positioned icons or reverse unrelated controls.
   const layoutTypes = [
-    RN.View,
     RN.ScrollView,
     RN.FlatList,
     RN.SectionList,
     RN.VirtualizedList,
-    RN.Pressable,
-    RN.TouchableOpacity,
-    RN.TouchableHighlight,
-    RN.TouchableWithoutFeedback,
   ];
   const controlTypes = [(RN as any).Switch, (RN as any).Checkbox];
 
@@ -198,19 +196,36 @@ function patchLiveRtl(): void {
       /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildIcon|ServerIcon|GuildItem|ServerItem|GuildScroller|GuildsScroller)/i.test(name);
     const serverRailContainerLike =
       /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildScroller|GuildsScroller)/i.test(name);
+    const messageLike =
+      /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView)/i.test(name);
+    const directMessageLike =
+      /(?:DM|DirectMessage|PrivateChannel|DirectMessageList|ConversationList|FriendsList|HomeTab)/i.test(name);
     const statusLike =
       /(?:Status|ProfileStatus|StatusBubble|AddStatus)/i.test(name) ||
       hasUiText(result.props?.children, /^\s*(?:Add status|Add Status)\s*$/i);
     const rowLike =
       /(?:SwitchRow|FormSwitch|SettingRow|FormRow|ListRow|ChannelRow|MessageRow|GuildRow|TabBar|Header|Navigation|Status|Trigger|Toggle|Segment|Pill)/i.test(name) ||
-      statusLike;
-    const triggerLike =
-      /(?:Trigger|Toggle|Segment|Pill|Checkbox|Radio|Option|SwitchRow|FormSwitch|Boolean)/i.test(name) ||
-      hasUiText(result.props?.children, /^\s*(?:True|False|On|Off|Enabled|Disabled)\s*$/i);
+      statusLike ||
+      directMessageLike;
     const controlLike = isOneOf(type, controlTypes) || /^(?:Switch|Checkbox|Radio)$/i.test(name);
-    if (!textLike && !layoutLike && !rowLike && !serverRailLike && !controlLike) return result;
+    if (!textLike && !layoutLike && !rowLike && !serverRailLike && !messageLike && !controlLike) return result;
 
     const nextProps = translateUiProps(result.props);
+
+    // Keep the server rail in its native coordinate system. React Native's
+    // I18nManager already handles RTL edge swapping, while changing the rail
+    // itself or manually moving left -> right can make guild icons disappear.
+    if (settings.rtl && serverRailLike) {
+      if (serverRailContainerLike) {
+        nextProps.style = styleArray(nextProps.style, { direction: "ltr" });
+        if (nextProps.contentContainerStyle != null) {
+          nextProps.contentContainerStyle = styleArray(nextProps.contentContainerStyle, {
+            direction: "ltr",
+          });
+        }
+      }
+      return finish(nextProps);
+    }
     let existing: Record<string, any> = {};
     try {
       existing = (RN as any).StyleSheet?.flatten?.(nextProps.style) ?? nextProps.style ?? {};
@@ -223,7 +238,7 @@ function patchLiveRtl(): void {
         writingDirection: "rtl",
         textAlign: existing.textAlign ?? "right",
       });
-    } else if (settings.rtl && (layoutLike || rowLike || serverRailLike || controlLike)) {
+    } else if (settings.rtl && (layoutLike || rowLike || messageLike || controlLike)) {
       // The row is RTL, but the native control must stay LTR. Applying RTL
       // directly to Switch/Checkbox is what makes the thumb/check escape.
       if (controlLike) {
@@ -234,28 +249,16 @@ function patchLiveRtl(): void {
         return finish(nextProps);
       }
 
-      const currentDirection = existing.flexDirection;
-      const isHorizontal = currentDirection === "row" || currentDirection === "row-reverse";
-      const isNarrowAbsoluteRail =
-        (existing.position === "absolute" || existing.position === "fixed") &&
-        existing.left === 0 &&
-        typeof existing.width === "number" &&
-        existing.width <= 120;
+      // `direction: rtl` reverses the main axis for a `row` in React Native.
+      // Adding `row-reverse` as well would cancel RTL and is a common source
+      // of misplaced buttons, triggers, and message actions.
       const rtlLayout: Record<string, unknown> = {
         direction: "rtl",
-        ...(triggerLike || statusLike || isHorizontal
-          ? { flexDirection: currentDirection === "row-reverse" ? "row" : "row-reverse" }
-          : {}),
       };
-      if ((serverRailContainerLike || isNarrowAbsoluteRail) && (existing.position === "absolute" || existing.position === "fixed")) {
-        rtlLayout.left = undefined;
-        rtlLayout.right = existing.right ?? 0;
-      }
       nextProps.style = styleArray(nextProps.style, rtlLayout);
       if (nextProps.contentContainerStyle != null) {
         nextProps.contentContainerStyle = styleArray(nextProps.contentContainerStyle, {
           direction: "rtl",
-          ...(serverRailContainerLike ? { flexDirection: "column" } : {}),
         });
       }
     }
