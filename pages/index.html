@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ArabCord — ترجمة واجهة Discord إلى العربية مع دعم RTL التجريبي." />
+    <title>ArabCord — Discord Arabic UI</title>
+    <style>
+      :root { color-scheme: dark; --bg: #101322; --panel: #191d31; --text: #f4f5ff; --muted: #b9bdd4; --accent: #8d7bff; --line: #303650; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: radial-gradient(circle at top, #27204a 0, var(--bg) 46%); color: var(--text); font: 16px/1.75 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      main { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 72px; }
+      header, section { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: 22px; padding: 28px; margin-bottom: 20px; box-shadow: 0 18px 60px #0003; }
+      header { text-align: center; }
+      h1 { margin: 0 0 8px; font-size: clamp(2.2rem, 8vw, 4.2rem); letter-spacing: -0.05em; }
+      h2 { margin-top: 0; color: #d8d2ff; }
+      p { color: var(--muted); }
+      code, .url { background: #0c0f1b; border: 1px solid var(--line); border-radius: 8px; padding: 2px 7px; color: #e4ddff; overflow-wrap: anywhere; }
+      .button { display: inline-block; margin-top: 8px; background: var(--accent); color: white; padding: 10px 16px; border-radius: 11px; text-decoration: none; font-weight: 700; }
+      li { margin: 8px 0; color: var(--muted); }
+      .english { direction: ltr; text-align: left; }
+      .badge { display: inline-block; padding: 3px 9px; border: 1px solid #6355a8; border-radius: 999px; color: #d8d2ff; font-size: .85rem; }
+      footer { color: var(--muted); text-align: center; font-size: .9rem; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="badge">ArabCord</div>
+        <h1>واجهة Discord بالعربية</h1>
+        <p>إضافة لعائلة Vendetta وRevenge وKettu لترجمة نصوص واجهة Discord إلى العربية. دعم RTL متاح حاليًا كخيار تجريبي ومغلق افتراضيًا.</p>
+        <a class="button" href="./manifest.json">فتح manifest.json</a>
+      </header>
+
+      <section>
+        <h2>التثبيت</h2>
+        <ol>
+          <li>انسخ رابط هذه الصفحة أو استخدم رابط الموقع المنشور من GitHub Pages.</li>
+          <li>افتح Discord ثم اذهب إلى <strong>Settings → Plugins</strong>.</li>
+          <li>اضغط على علامة <strong>+</strong> لإضافة Plugin جديد.</li>
+          <li>الصق رابط Pages الأساسي ثم اضغط <strong>Install</strong>.</li>
+          <li>وافق على التثبيت إذا ظهر تأكيد، ثم أعد تشغيل Discord.</li>
+        </ol>
+        <p>تُستضاف ملفات التوزيع فقط على Pages: <code>index.js</code> و<code>manifest.json</code>. لا يتم نشر <code>src</code> أو <code>node_modules</code> ضمن مخرجات الموقع.</p>
+      </section>
+
+      <section>
+        <h2>الأمان والتحقق</h2>
+        <p>يُبنى plugin داخل GitHub Actions بعد نجاح اختبارات الترجمة وفحص TypeScript. يتحقق workflow من أن SHA-256 الموجود في manifest يطابق الملف المبني، ثم ينشر المخرجات الموثقة فقط. لذلك يجب تثبيت plugin من رابط Pages الرسمي للمستودع، وليس من ملفات مجهولة أو روابط إعادة توجيه.</p>
+        <p>Author: <strong>S.N.T</strong> · ID: <code>1444349574859980881</code></p>
+      </section>
+
+      <section>
+        <h2>RTL التجريبي</h2>
+        <p>الترجمة مفعّلة، أما RTL فهو خيار <strong>BETA</strong> مغلق افتراضيًا بسبب اختلاف بنية مكونات Discord بين الإصدارات. يمكن تفعيله يدويًا من إعدادات ArabCord مع العلم أنه تجريبي.</p>
+      </section>
+
+      <section class="english" lang="en" dir="ltr">
+        <h2>English</h2>
+        <p>ArabCord is a Vendetta/Revenge/Kettu plugin that translates Discord’s interface into Arabic. RTL is currently experimental and disabled by default.</p>
+        <h2>Install</h2>
+        <ol>
+          <li>Copy this GitHub Pages URL.</li>
+          <li>Open Discord and go to <strong>Settings → Plugins</strong>.</li>
+          <li>Press <strong>+</strong> to add a plugin.</li>
+          <li>Paste the Pages URL and press <strong>Install</strong>.</li>
+          <li>Confirm the installation if prompted, then restart Discord.</li>
+        </ol>
+        <p>Only generated distribution files are published to Pages: <code>index.js</code> and <code>manifest.json</code>. Source files and <code>node_modules</code> are not included in the published output.</p>
+        <h2>Build security</h2>
+        <p>GitHub Actions runs the translation tests and TypeScript check, verifies that the manifest SHA-256 matches the generated bundle, and publishes only the verified output. Install ArabCord only from the official Pages URL for the repository.</p>
+        <p>Author: <strong>S.N.T</strong> · ID: <code>1444349574859980881</code></p>
+      </section>
+
+      <footer>ArabCord · Built and published by GitHub Actions</footer>
+    </main>
+  </body>
+</html>

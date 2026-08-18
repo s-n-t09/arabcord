@@ -1,0 +1,97 @@
+name: Build and deploy ArabCord
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Test, build, verify, and prepare Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run translation tests
+        run: pnpm test:translation
+
+      - name: Run TypeScript check
+        run: pnpm exec tsc --noEmit
+
+      - name: Build plugin
+        run: pnpm build
+
+      - name: Verify generated plugin
+        run: node scripts/verify-dist.mjs
+
+      - name: Prepare Pages directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site
+          cp pages/index.html _site/index.html
+          cp dist/arabcord/index.js _site/index.js
+          cp dist/arabcord/manifest.json _site/manifest.json
+          sha256sum _site/index.js _site/manifest.json > _site/SHA256SUMS.txt
+          node scripts/verify-dist.mjs --site _site
+
+      - name: Attest built plugin
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: _site/index.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy verified build to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

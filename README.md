@@ -369,3 +369,36 @@ ArabCord does not copy Discord translation files. It uses an original ArabCord d
 [5]: https://github.com/revenge-mod/revenge-bundle "Revenge bundle"
 [6]: https://github.com/discord/discord-intl "Discord Intl"
 [7]: https://github.com/revenge-mod/revenge-bundle/blob/main/src/core/vendetta/plugins.ts "Revenge plugin loader"
+
+
+---
+
+# النشر الآمن عبر GitHub Actions وGitHub Pages
+
+يعتمد ArabCord على **بناء قابل لإعادة الإنتاج** بدل رفع `index.js` مجهول المصدر يدويًا. عند كل تغيير على فرع `main`، يشغّل GitHub Actions اختبارات الترجمة وفحص TypeScript ثم يبني الإضافة من المصدر الموجود في المستودع. بعد ذلك يتحقق workflow من أن قيمة SHA-256 الموجودة في `manifest.json` تطابق ملف `index.js` الناتج، ويولّد إثبات مصدر للملف المبني.
+
+ينشر GitHub Pages مجلدًا صغيرًا يحتوي على `index.html` و`index.js` و`manifest.json` و`SHA256SUMS.txt` فقط. لا يتم نشر `src` أو `node_modules` أو ملفات التطوير إلى رابط التثبيت. هذا يجعل ما يثبته المستخدم هو نفس الملف الذي بُني وفُحص داخل Actions، مع إمكانية مراجعة المصدر وسجل البناء من GitHub.
+
+## تفعيل GitHub Pages
+
+افتح إعدادات المستودع ثم **Settings → Pages**، واختر **GitHub Actions** كمصدر النشر. بعد دمج workflow وتشغيله على فرع `main`، سيظهر رابط Pages في تبويب Actions وفي بيئة `github-pages`. استخدم رابط Pages الأساسي في Plugin Manager؛ سيجد مدير الإضافات `manifest.json` في الجذر المنشور.
+
+لا ينبغي تشغيل workflow من Pull Request كعملية نشر. في هذا المشروع تُنفّذ الاختبارات والبناء على Pull Request، بينما لا يتم النشر إلا بعد push إلى `main` أو تشغيل يدوي من GitHub Actions. كما أن وظيفة النشر منفصلة عن وظيفة البناء وتحتاج إلى صلاحيات Pages وOIDC المحددة فقط.
+
+للمراجعة الأمنية، راجع [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)، و[artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds)، و[upload-pages-artifact](https://github.com/actions/upload-pages-artifact).
+
+---
+
+# Secure GitHub Actions and GitHub Pages publishing
+
+ArabCord uses a **reproducible build pipeline** instead of relying on manually uploaded, unidentified JavaScript. For every change pushed to `main`, GitHub Actions runs the translation tests and the TypeScript check, then builds the plugin from the repository source. The workflow verifies that the SHA-256 value in `manifest.json` matches the generated `index.js` and creates build provenance for the generated file.
+
+GitHub Pages publishes only a small static directory containing `index.html`, `index.js`, `manifest.json`, and `SHA256SUMS.txt`. The published site does not include `src`, `node_modules`, or development files. This means users install the exact bundle that was built and verified by Actions, while the source and build history remain reviewable on GitHub.
+
+## Enable GitHub Pages
+
+Open the repository settings, select **Settings → Pages**, and choose **GitHub Actions** as the publishing source. After the workflow runs on `main`, GitHub shows the Pages URL in the Actions tab and in the `github-pages` environment. Use the base Pages URL in the Plugin Manager; the manager will find `manifest.json` at the published root.
+
+Pull requests run the tests and build but do not deploy. Deployment is allowed only after a push to `main` or a manual workflow run. The deployment job is separate from the build job and uses only the required Pages and OIDC permissions.
+
+For security details, see [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), and [upload-pages-artifact](https://github.com/actions/upload-pages-artifact).
