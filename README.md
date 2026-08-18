@@ -1,12 +1,16 @@
 # ArabCord
 
 <p align="center">
-<strong>تعريب واجهة Discord وإضافة دعم RTL لعائلة Vendetta Modding</strong>
-</p> <p align="center">
+  <strong>تعريب واجهة Discord وإضافة دعم RTL لعائلة Vendetta Modding</strong>
+</p>
+
+<p align="center">
   <a href="https://arabcord.dcord.us"><img src="https://img.shields.io/badge/Plugin-ArabCord-5865F2?style=for-the-badge" alt="ArabCord Plugin"></a>
   <a href="https://github.com/vendetta-mod/plugin-template"><img src="https://img.shields.io/badge/Platform-Vendetta%20%7C%20Revenge%20%7C%20Kettu-111827?style=for-the-badge" alt="Supported platforms"></a>
   <a href="https://arabcord.dcord.us"><img src="https://img.shields.io/badge/Language-Arabic%20%2B%20RTL-16A34A?style=for-the-badge" alt="Arabic and RTL"></a>
-</p> <p align="center">
+</p>
+
+<p align="center">
   <a href="#العربية">العربية</a>
   &nbsp;•&nbsp;
   <a href="#english">English</a>
@@ -22,12 +26,12 @@
 
 تركّز الإضافة على ترجمة واجهة التطبيق نفسها، وليس رسائل المستخدمين أو أسماء الحسابات أو الروابط. وتستخدم عدة مسارات احتياطية لأن Discord قد يغيّر طريقة تحميل الوحدات أو طريقة إنشاء النصوص بين إصدار وآخر.
 
-> **الحالة الحالية:** الترجمة مفعّلة افتراضيًا. أما RTL فهو خيار تجريبي **مغلق افتراضيًا** ويمكن تفعيله يدويًا من إعدادات ArabCord تحت اسم **تفعيل RTL (BETA )**.
+> **الحالة الحالية:** الترجمة مفعّلة افتراضيًا. أما RTL فهو خيار تجريبي **مغلق افتراضيًا** ويمكن تفعيله يدويًا من إعدادات ArabCord تحت اسم **تفعيل RTL (BETA)**.
 
 ## المزايا
 
 | الميزة | التفاصيل |
-| --- | --- |
+|---|---|
 | تعريب الواجهة | ترجمة عبارات Discord الرسمية الشائعة إلى العربية، بما في ذلك الإعدادات والقنوات والرسائل والملفات الشخصية وبعض صفحات النظام. |
 | حماية النصوص | عدم ترجمة محتوى المستخدمين، وأسماء المستخدمين، والروابط، وكتل الكود، والقيم الديناميكية غير المعروفة. |
 | منع الترجمة الجزئية | حماية العبارات من صيغ هجينة مثل `إرسالing` أو `صديقs` عبر المطابقة الكاملة والأنماط الآمنة. |
@@ -54,38 +58,33 @@
 
 رابط الإضافة الرسمي هو:
 
-```
+```text
 https://arabcord.dcord.us
 ```
 
 اتبع الخطوات التالية:
 
 1. انسخ الرابط `https://arabcord.dcord.us`.
+2. افتح Discord ثم اذهب إلى **Settings** ثم **Plugins**.
+3. اضغط على علامة **+** لبدء إضافة Plugin.
+4. الصق الرابط واضغط **Install**.
+5. إذا ظهر طلب تأكيد، اضغط **Install** مرة أخرى.
+6. أعد تشغيل تطبيق Discord.
 
-1. افتح Discord ثم اذهب إلى **Settings** ثم **Plugins**.
-
-1. اضغط على علامة **+** لبدء إضافة Plugin.
-
-1. الصق الرابط واضغط **Install**.
-
-1. إذا ظهر طلب تأكيد، اضغط **Install** مرة أخرى.
-
-1. أعد تشغيل تطبيق Discord.
-
-بعد التثبيت، افتح إعدادات ArabCord للتأكد من أن الترجمة مفعّلة. ستجد خيار **تفعيل RTL (BETA )** مغلقًا افتراضيًا؛ لا تفعّله إلا إذا كنت تريد تجربة الاتجاه التجريبي.
+بعد التثبيت، افتح إعدادات ArabCord للتأكد من أن الترجمة مفعّلة. ستجد خيار **تفعيل RTL (BETA)** مغلقًا افتراضيًا؛ لا تفعّله إلا إذا كنت تريد تجربة الاتجاه التجريبي.
 
 ### ملاحظة مهمة للاستضافة اليدوية
 
 يجب أن يشير الرابط إلى **المجلد الأساسي** الذي يحتوي على `manifest.json`، وليس إلى ملف manifest نفسه. إذا كانت ملفات التوزيع مرفوعة إلى جذر النطاق، فيجب أن تكون المسارات كما يلي:
 
-```
+```text
 https://example.com/manifest.json
 https://example.com/index.js
 ```
 
 ولا تستخدم الرابط التالي داخل مدير الإضافات:
 
-```
+```text
 https://example.com/manifest.json
 ```
 
@@ -94,9 +93,9 @@ https://example.com/manifest.json
 ## الإعدادات
 
 | الإعداد | القيمة الافتراضية | الوصف |
-| --- | --- | --- |
+|---|---:|---|
 | تفعيل ArabCord | مفعّل | تشغيل أو إيقاف الإضافة بالكامل. |
-| تفعيل RTL (BETA ) | مغلق | تشغيل patch RTL المحدود يدويًا. |
+| تفعيل RTL (BETA) | مغلق | تشغيل patch RTL المحدود يدويًا. |
 | ترجمة discord-intl | مفعّل | المسار الرئيسي لترجمة نصوص Discord الرسمية. |
 | ترجمة خرائط Messages | مفعّل | مسار احتياطي للنصوص التي تُقرأ من خرائط `Messages`. |
 
@@ -106,7 +105,7 @@ https://example.com/manifest.json
 
 يعتمد ArabCord على دورة حياة الإضافة المعتادة في Vendetta، ويضع عمليات الاعتراض داخل قائمة يمكن إزالتها عند `onUnload`. وتشمل البنية الحالية ما يلي:
 
-```
+```text
 Discord UI
    │
    ├── discord-intl: intl.string / intl.format
@@ -123,7 +122,7 @@ Discord UI
 ```
 
 | الملف | الدور |
-| --- | --- |
+|---|---|
 | `plugins/arabcord/manifest.json` | بيانات الإضافة واسم المؤلف والمعرّف وentrypoint. |
 | `plugins/arabcord/src/index.tsx` | دورة الحياة، اعتراض الوحدات، الإعدادات، ومسار RTL التجريبي. |
 | `plugins/arabcord/src/translation.ts` | القاموس ومحرك الترجمة والمطابقة الآمنة. |
@@ -133,7 +132,7 @@ Discord UI
 ## المؤلف والبيانات التعريفية
 
 | الحقل | القيمة |
-| --- | --- |
+|---|---|
 | Author | `S.N.T` |
 | ID | `1444349574859980881` |
 | Plugin name | `ArabCord` |
@@ -150,7 +149,7 @@ pnpm build
 
 ينتج البناء الملفات التالية:
 
-```
+```text
 dist/arabcord/index.js
 dist/arabcord/manifest.json
 ```
@@ -178,7 +177,7 @@ node --check dist/arabcord/index.js
 
 إذا فشل تثبيت الإضافة، تأكد من استخدام رابط المجلد الأساسي، ومن أن `manifest.json` متاح مباشرة عبر HTTPS. إذا ظهرت نسخة قديمة بعد رفع ملفات جديدة، احذف ArabCord من Discord ثم ثبّته مجددًا، وتحقق من أن hash الموجود في manifest تغيّر.
 
-إذا كانت الترجمة تعمل لكن RTL لا يظهر، فهذا متوقع في الوضع الافتراضي الجديد؛ افتح إعدادات ArabCord وتحقق من خيار **تفعيل RTL (BETA )**. وإذا أدى تفعيله إلى اضطراب التخطيط، أوقف الخيار وأعد تشغيل Discord، ثم أرسل لقطة شاشة ومعلومات إصدار Discord واسم الـ mod المستخدم.
+إذا كانت الترجمة تعمل لكن RTL لا يظهر، فهذا متوقع في الوضع الافتراضي الجديد؛ افتح إعدادات ArabCord وتحقق من خيار **تفعيل RTL (BETA)**. وإذا أدى تفعيله إلى اضطراب التخطيط، أوقف الخيار وأعد تشغيل Discord، ثم أرسل لقطة شاشة ومعلومات إصدار Discord واسم الـ mod المستخدم.
 
 ## المساهمة
 
@@ -203,7 +202,7 @@ The plugin focuses on Discord’s own interface strings rather than user content
 ## Features
 
 | Feature | Details |
-| --- | --- |
+|---|---|
 | Arabic UI localization | Translates a broad set of common Discord interface strings, including settings, channels, messages, profiles, and system screens. |
 | Content protection | Avoids translating user content, usernames, links, code blocks, and unknown dynamic values. |
 | Partial-translation protection | Uses exact matching and safe patterns to prevent hybrid output such as `إرسالing` or `صديقs`. |
@@ -230,38 +229,33 @@ When manually enabled, ArabCord uses a limited patch for recognizable elements. 
 
 The official hosted plugin URL is:
 
-```
+```text
 https://arabcord.dcord.us
 ```
 
 Follow these steps:
 
 1. Copy `https://arabcord.dcord.us`.
+2. Open Discord and go to **Settings**, then **Plugins**.
+3. Press the **+** button to add a plugin.
+4. Paste the URL and press **Install**.
+5. If a confirmation dialog appears, press **Install** again.
+6. Restart the Discord app.
 
-1. Open Discord and go to **Settings**, then **Plugins**.
-
-1. Press the **+** button to add a plugin.
-
-1. Paste the URL and press **Install**.
-
-1. If a confirmation dialog appears, press **Install** again.
-
-1. Restart the Discord app.
-
-After installation, open ArabCord settings and confirm that translation is enabled. The **Enable RTL (BETA )** switch is disabled by default and should only be enabled when you want to test the experimental layout behavior.
+After installation, open ArabCord settings and confirm that translation is enabled. The **Enable RTL (BETA)** switch is disabled by default and should only be enabled when you want to test the experimental layout behavior.
 
 ### Manual hosting note
 
 The plugin manager expects the **base directory URL** containing `manifest.json`, not the manifest file URL itself. If the distribution files are uploaded to the domain root, these paths must be available:
 
-```
+```text
 https://example.com/manifest.json
 https://example.com/index.js
 ```
 
 Do not paste this into the plugin manager:
 
-```
+```text
 https://example.com/manifest.json
 ```
 
@@ -270,9 +264,9 @@ The manager may append `manifest.json` again and request an invalid path. HTTPS 
 ## Settings
 
 | Setting | Default | Description |
-| --- | --- | --- |
+|---|---:|---|
 | Enable ArabCord | Enabled | Enables or disables the entire plugin. |
-| Enable RTL (BETA ) | Disabled | Manually enables the limited experimental RTL patch. |
+| Enable RTL (BETA) | Disabled | Manually enables the limited experimental RTL patch. |
 | Translate discord-intl | Enabled | Main path for translating official Discord interface strings. |
 | Translate Messages maps | Enabled | Fallback path for strings read from `Messages` maps. |
 
@@ -282,7 +276,7 @@ When upgrading from an older build that persisted RTL as enabled, the current re
 
 ArabCord follows the standard Vendetta-style plugin lifecycle and stores patches in an unloader list that is cleaned up during `onUnload`. The current architecture is:
 
-```
+```text
 Discord UI
    │
    ├── discord-intl: intl.string / intl.format
@@ -299,7 +293,7 @@ Discord UI
 ```
 
 | File | Purpose |
-| --- | --- |
+|---|---|
 | `plugins/arabcord/manifest.json` | Plugin metadata, author identity, and entrypoint. |
 | `plugins/arabcord/src/index.tsx` | Lifecycle, module hooks, settings, and experimental RTL path. |
 | `plugins/arabcord/src/translation.ts` | Translation dictionary, matching engine, and safety rules. |
@@ -309,7 +303,7 @@ Discord UI
 ## Author and metadata
 
 | Field | Value |
-| --- | --- |
+|---|---|
 | Author | `S.N.T` |
 | ID | `1444349574859980881` |
 | Plugin name | `ArabCord` |
@@ -326,7 +320,7 @@ pnpm build
 
 The build produces:
 
-```
+```text
 dist/arabcord/index.js
 dist/arabcord/manifest.json
 ```
@@ -354,7 +348,7 @@ The tests cover exact phrase matching, partial-translation protection, dynamic c
 
 If installation fails, verify that you are using the base directory URL and that `manifest.json` is directly reachable over HTTPS. If an old build continues to appear after uploading new files, remove ArabCord from Discord, reinstall it, and confirm that the manifest hash has changed.
 
-If translation works but RTL does not appear, this is expected with the new default. Open ArabCord settings and check **Enable RTL (BETA )**. If enabling it causes layout problems, turn it off, restart Discord, and report the Discord version, the mod name, and a screenshot of the affected screen.
+If translation works but RTL does not appear, this is expected with the new default. Open ArabCord settings and check **Enable RTL (BETA)**. If enabling it causes layout problems, turn it off, restart Discord, and report the Discord version, the mod name, and a screenshot of the affected screen.
 
 ## Contributing
 
@@ -369,15 +363,9 @@ ArabCord does not copy Discord translation files. It uses an original ArabCord d
 ## References
 
 [1]: https://plugindocs.nexpid.xyz/guides/manifest "Vendetta Plugin Docs — Manifest"
-
 [2]: https://plugindocs.nexpid.xyz/guides/plugin-entrypoint "Vendetta Plugin Docs — Plugin entrypoint"
-
 [3]: https://github.com/vendetta-mod/plugin-template "Vendetta Plugin Template"
-
 [4]: https://github.com/nexpid/RevengePlugins "RevengePlugins"
-
 [5]: https://github.com/revenge-mod/revenge-bundle "Revenge bundle"
-
 [6]: https://github.com/discord/discord-intl "Discord Intl"
-
 [7]: https://github.com/revenge-mod/revenge-bundle/blob/main/src/core/vendetta/plugins.ts "Revenge plugin loader"
