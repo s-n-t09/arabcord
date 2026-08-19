@@ -168,6 +168,18 @@ function isOneOf(type: unknown, values: unknown[]): boolean {
   return values.some(value => value != null && type === value);
 }
 
+function hasTextNode(value: unknown): boolean {
+  if (Array.isArray(value)) return value.some(hasTextNode);
+  if (!value || typeof value !== "object") return false;
+  const element = value as { type?: unknown; props?: { children?: unknown } };
+  const name = componentName(element.type);
+  if (
+    isOneOf(element.type, [RN.Text, RN.TextInput, (General as any).Text, (Forms as any).FormText]) ||
+    /^(?:Themed)?Text(?:Input)?$|Typography|Heading|BodyText|FormText/i.test(name)
+  ) return true;
+  return hasTextNode(element.props?.children);
+}
+
 function patchLiveRtl(): void {
   const react = React as any;
   if (!react || typeof react.createElement !== "function" || typeof react.cloneElement !== "function") return;
@@ -197,18 +209,43 @@ function patchLiveRtl(): void {
     const serverRailContainerLike =
       /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildScroller|GuildsScroller)/i.test(name);
     const messageLike =
-      /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView)/i.test(name);
+      /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView|ChannelMessages|MessageScreen)/i.test(name);
     const directMessageLike =
-      /(?:DM|DirectMessage|PrivateChannel|DirectMessageList|ConversationList|FriendsList|HomeTab)/i.test(name);
+      /(?:DM|DirectMessage|PrivateChannel|DirectMessageList|ConversationList|FriendsList|HomeTab|HomeScreen|HomeHeader|Inbox|RecentDM)/i.test(name);
+    const memberLike =
+      /(?:Member|Members|GuildMember|ChannelMember|MemberList|MemberRow|MemberItem|UserList|UserRow|UserItem|Participant|Recipient|People|RoleList)/i.test(name);
+    const homeLike =
+      /(?:Home|Friends|Activity|NowPlaying|Discover|Notification|Mention|Following|Suggested)/i.test(name);
     const statusLike =
       /(?:Status|ProfileStatus|StatusBubble|AddStatus)/i.test(name) ||
       hasUiText(result.props?.children, /^\s*(?:Add status|Add Status)\s*$/i);
     const rowLike =
       /(?:SwitchRow|FormSwitch|SettingRow|FormRow|ListRow|ChannelRow|MessageRow|GuildRow|TabBar|Header|Navigation|Status|Trigger|Toggle|Segment|Pill)/i.test(name) ||
       statusLike ||
-      directMessageLike;
+      directMessageLike ||
+      memberLike ||
+      homeLike;
     const controlLike = isOneOf(type, controlTypes) || /^(?:Switch|Checkbox|Radio)$/i.test(name);
-    if (!textLike && !layoutLike && !rowLike && !serverRailLike && !messageLike && !controlLike) return result;
+
+    let existing: Record<string, any> = {};
+    try {
+      existing = (RN as any).StyleSheet?.flatten?.(result.props?.style) ?? result.props?.style ?? {};
+    } catch {
+      existing = {};
+    }
+    const narrowAbsoluteRail =
+      (existing.position === "absolute" || existing.position === "fixed") &&
+      ((existing.left === 0 || existing.right === 0) || existing.width <= 120) &&
+      typeof existing.width === "number" &&
+      existing.width <= 120;
+    const genericRtlRowLike =
+      isOneOf(type, [RN.View]) &&
+      !narrowAbsoluteRail &&
+      !serverRailLike &&
+      hasTextNode(result.props?.children) &&
+      (existing.flexDirection === "row" || existing.flexDirection === "row-reverse");
+
+    if (!textLike && !layoutLike && !rowLike && !serverRailLike && !messageLike && !controlLike && !genericRtlRowLike) return result;
 
     const nextProps = translateUiProps(result.props);
 
@@ -226,19 +263,15 @@ function patchLiveRtl(): void {
       }
       return finish(nextProps);
     }
-    let existing: Record<string, any> = {};
-    try {
-      existing = (RN as any).StyleSheet?.flatten?.(nextProps.style) ?? nextProps.style ?? {};
-    } catch {
-      existing = {};
-    }
     if (textLike && settings.rtl) {
       nextProps.style = styleArray(nextProps.style, {
         direction: "rtl",
         writingDirection: "rtl",
-        textAlign: existing.textAlign ?? "right",
+        // Discord often supplies `textAlign: left` explicitly. Override it
+        // for RTL text so chat messages and member names do not remain LTR.
+        textAlign: "right",
       });
-    } else if (settings.rtl && (layoutLike || rowLike || messageLike || controlLike)) {
+    } else if (settings.rtl && (layoutLike || rowLike || messageLike || controlLike || genericRtlRowLike)) {
       // The row is RTL, but the native control must stay LTR. Applying RTL
       // directly to Switch/Checkbox is what makes the thumb/check escape.
       if (controlLike) {
