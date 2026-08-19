@@ -180,6 +180,26 @@ function hasTextNode(value: unknown): boolean {
   return hasTextNode(element.props?.children);
 }
 
+function flattenStyle(style: unknown): Record<string, any> {
+  try {
+    return (RN as any).StyleSheet?.flatten?.(style) ?? style ?? {};
+  } catch {
+    return {};
+  }
+}
+
+function isGeometrySensitive(style: Record<string, any>): boolean {
+  return (
+    style.position === "absolute" ||
+    style.position === "fixed" ||
+    style.transform != null ||
+    style.left != null ||
+    style.right != null ||
+    style.top != null ||
+    style.bottom != null
+  );
+}
+
 function patchLiveRtl(): void {
   const react = React as any;
   if (!react || typeof react.createElement !== "function" || typeof react.cloneElement !== "function") return;
@@ -208,6 +228,9 @@ function patchLiveRtl(): void {
       /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildIcon|ServerIcon|GuildItem|ServerItem|GuildScroller|GuildsScroller)/i.test(name);
     const serverRailContainerLike =
       /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildScroller|GuildsScroller)/i.test(name);
+    const horizontalListLike =
+      layoutLike && (result.props?.horizontal === true || result.props?.horizontal === "true");
+    const invertedListLike = layoutLike && result.props?.inverted === true;
     const messageLike =
       /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView|ChannelMessages|MessageScreen)/i.test(name);
     const directMessageLike =
@@ -227,12 +250,8 @@ function patchLiveRtl(): void {
       homeLike;
     const controlLike = isOneOf(type, controlTypes) || /^(?:Switch|Checkbox|Radio)$/i.test(name);
 
-    let existing: Record<string, any> = {};
-    try {
-      existing = (RN as any).StyleSheet?.flatten?.(result.props?.style) ?? result.props?.style ?? {};
-    } catch {
-      existing = {};
-    }
+    const existing = flattenStyle(result.props?.style);
+    const geometrySensitive = isGeometrySensitive(existing);
     const narrowAbsoluteRail =
       (existing.position === "absolute" || existing.position === "fixed") &&
       ((existing.left === 0 || existing.right === 0) || existing.width <= 120) &&
@@ -244,8 +263,22 @@ function patchLiveRtl(): void {
       !serverRailLike &&
       hasTextNode(result.props?.children) &&
       (existing.flexDirection === "row" || existing.flexDirection === "row-reverse");
+    const semanticContainerLike =
+      layoutLike ||
+      rowLike ||
+      messageLike ||
+      directMessageLike ||
+      memberLike ||
+      homeLike ||
+      genericRtlRowLike;
+    const preserveGeometry =
+      geometrySensitive &&
+      !messageLike &&
+      !directMessageLike &&
+      !memberLike &&
+      !homeLike;
 
-    if (!textLike && !layoutLike && !rowLike && !serverRailLike && !messageLike && !controlLike && !genericRtlRowLike) return result;
+    if (!textLike && !semanticContainerLike && !serverRailLike && !controlLike) return result;
 
     const nextProps = translateUiProps(result.props);
 
@@ -271,7 +304,7 @@ function patchLiveRtl(): void {
         // for RTL text so chat messages and member names do not remain LTR.
         textAlign: "right",
       });
-    } else if (settings.rtl && (layoutLike || rowLike || messageLike || controlLike || genericRtlRowLike)) {
+    } else if (settings.rtl && semanticContainerLike && !preserveGeometry && !horizontalListLike) {
       // The row is RTL, but the native control must stay LTR. Applying RTL
       // directly to Switch/Checkbox is what makes the thumb/check escape.
       if (controlLike) {
@@ -289,7 +322,7 @@ function patchLiveRtl(): void {
         direction: "rtl",
       };
       nextProps.style = styleArray(nextProps.style, rtlLayout);
-      if (nextProps.contentContainerStyle != null) {
+      if (nextProps.contentContainerStyle != null && !horizontalListLike && !invertedListLike) {
         nextProps.contentContainerStyle = styleArray(nextProps.contentContainerStyle, {
           direction: "rtl",
         });
