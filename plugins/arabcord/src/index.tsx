@@ -200,6 +200,21 @@ function isGeometrySensitive(style: Record<string, any>): boolean {
   );
 }
 
+function semanticProps(props: Record<string, any>): string {
+  return [
+    props?.testID,
+    props?.nativeID,
+    props?.accessibilityLabel,
+    props?.accessibilityRole,
+    props?.role,
+    props?.className,
+    props?.["data-testid"],
+    props?.["data-component"],
+  ]
+    .filter(value => typeof value === "string")
+    .join(" ");
+}
+
 function patchLiveRtl(): void {
   const react = React as any;
   if (!react || typeof react.createElement !== "function" || typeof react.cloneElement !== "function") return;
@@ -220,25 +235,26 @@ function patchLiveRtl(): void {
     const finish = (props: Record<string, any>) => canClone ? react.cloneElement(result, props) : { ...result, props };
     if (!result?.props) return result;
     const name = componentName(type);
+    const semanticName = `${name} ${semanticProps(result.props)}`;
     const textLike =
       isOneOf(type, textTypes) || /^(?:Themed)?Text(?:Input)?$|Typography|Heading|BodyText|FormText/i.test(name);
     const layoutLike =
       isOneOf(type, layoutTypes) || /^(?:ScrollView|FlatList|SectionList|VirtualizedList|Pressable|Touchable)/i.test(name);
     const serverRailLike =
-      /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildIcon|ServerIcon|GuildItem|ServerItem|GuildScroller|GuildsScroller)/i.test(name);
+      /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildIcon|ServerIcon|GuildItem|ServerItem|GuildScroller|GuildsScroller)/i.test(semanticName);
     const serverRailContainerLike =
-      /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildScroller|GuildsScroller)/i.test(name);
+      /(?:GuildSidebar|GuildList|ServerList|ServerRail|NavigationRail|GuildScroller|GuildsScroller)/i.test(semanticName);
     const horizontalListLike =
       layoutLike && (result.props?.horizontal === true || result.props?.horizontal === "true");
     const invertedListLike = layoutLike && result.props?.inverted === true;
     const messageLike =
-      /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView|ChannelMessages|MessageScreen)/i.test(name);
+      /(?:Message|Chat|Conversation|Thread|Reply|Composer|MessageContent|MessageList|ChatList|ChannelScreen|ChannelView|ChannelMessages|MessageScreen|ChatInput|MessageInput|SendButton|TypingIndicator)/i.test(semanticName);
     const directMessageLike =
-      /(?:DM|DirectMessage|PrivateChannel|DirectMessageList|ConversationList|FriendsList|HomeTab|HomeScreen|HomeHeader|Inbox|RecentDM)/i.test(name);
+      /(?:DM|DirectMessage|PrivateChannel|DirectMessageList|ConversationList|FriendsList|HomeTab|HomeScreen|HomeHeader|Inbox|RecentDM)/i.test(semanticName);
     const memberLike =
-      /(?:Member|Members|GuildMember|ChannelMember|MemberList|MemberRow|MemberItem|UserList|UserRow|UserItem|Participant|Recipient|People|RoleList)/i.test(name);
+      /(?:Member|Members|GuildMember|ChannelMember|MemberList|MemberRow|MemberItem|UserList|UserRow|UserItem|Participant|Recipient|People|RoleList)/i.test(semanticName);
     const homeLike =
-      /(?:Home|Friends|Activity|NowPlaying|Discover|Notification|Mention|Following|Suggested)/i.test(name);
+      /(?:Home|Friends|Activity|NowPlaying|Discover|Notification|Mention|Following|Suggested)/i.test(semanticName);
     const statusLike =
       /(?:Status|ProfileStatus|StatusBubble|AddStatus)/i.test(name) ||
       hasUiText(result.props?.children, /^\s*(?:Add status|Add Status)\s*$/i);
@@ -252,6 +268,7 @@ function patchLiveRtl(): void {
 
     const existing = flattenStyle(result.props?.style);
     const geometrySensitive = isGeometrySensitive(existing);
+    const chatContainerLike = messageLike && layoutLike;
     const narrowAbsoluteRail =
       (existing.position === "absolute" || existing.position === "fixed") &&
       ((existing.left === 0 || existing.right === 0) || existing.width <= 120) &&
@@ -322,7 +339,14 @@ function patchLiveRtl(): void {
         direction: "rtl",
       };
       nextProps.style = styleArray(nextProps.style, rtlLayout);
-      if (nextProps.contentContainerStyle != null && !horizontalListLike && !invertedListLike) {
+      if (chatContainerLike && !horizontalListLike) {
+        // FlatList/SectionList frequently omit contentContainerStyle. Add it
+        // for chat lists so the message body follows RTL without changing
+        // `inverted`, which controls vertical chronology.
+        nextProps.contentContainerStyle = styleArray(nextProps.contentContainerStyle, {
+          direction: "rtl",
+        });
+      } else if (nextProps.contentContainerStyle != null && !horizontalListLike && !invertedListLike) {
         nextProps.contentContainerStyle = styleArray(nextProps.contentContainerStyle, {
           direction: "rtl",
         });
